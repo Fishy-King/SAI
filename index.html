@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scratch Helper AI</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <h1>Scratch Helper AI</h1>
+    <p>Enter your Scratch problem below, and get a solution!</p>
+
+    <input type="text" id="problem" placeholder="Describe your Scratch problem">
+    <button id="getSolutionButton">Get Solution</button>
+
+    <div id="solution"></div>
+
+    <script>
+        document.getElementById('getSolutionButton').addEventListener('click', async () => {
+            const problem = document.getElementById('problem').value;
+
+            if (!problem) {
+                alert("Please enter a problem.");
+                return;
+            }
+
+            // Send the problem to your backend for a solution
+            try {
+                const response = await fetch('http://localhost:3000/get-scratch-solution', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ problem: problem })
+                });
+
+                const data = await response.json();
+
+                if (data.solution) {
+                    document.getElementById('solution').textContent = `Solution: ${data.solution}`;
+                } else {
+                    document.getElementById('solution').textContent = 'No solution found.';
+                }
+            } catch (error) {
+                document.getElementById('solution').textContent = 'Error: Could not fetch the solution.';
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
